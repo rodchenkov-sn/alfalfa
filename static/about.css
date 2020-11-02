@@ -1,0 +1,142 @@
+/** Better Code Blocks
+ *  By Timothy Foster at new Programmer()
+ *  Version: 1.02.150520
+ *  
+ *  Allows for different styles of code blocks that mirror Bootstrap's
+ *  standard primary, info, success, warning, and danger schemata.
+ *
+ *  Furthermore, Better Code Blocks allows for stronger syntax highlighting
+ *  customization.  In particular, it is designed to be compatible with the
+ *  code.highlight() tool provided by the new Programmer() website.
+ *  See newprogrammer.wikidot.com/system:code-highlight
+ *  ***************************************************************************/
+ 
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 30px;
+}
+
+.code{
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+    font-size: 13px;
+    background: #FFF;
+    border: none;
+}
+ 
+div.code{
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    margin: 10px 1px;
+    padding: .5em 1em;
+    box-shadow: 2px 2px 4px -4px rgba(0,0,0,.25) inset;
+    overflow: auto;
+    position: relative;
+ 
+    counter-reset: linenumber;
+}
+div.code p,
+div.code pre{
+    margin: 0;
+    padding: 0;
+}
+div.code p{
+    white-space: nowrap;
+    overflow-x: auto;
+}
+div.code span.line{
+    counter-increment: linenumber;
+    display: inline-block;
+    min-width: 90%;
+    padding-left: 32px;
+}
+div.code span.line:hover{  background-color: rgba(0,0,0,.05); }
+div.code span.line::before{
+    content: counter(linenumber);
+    position: absolute;
+    left: 10px;
+    width: 2.25em;
+    text-align: right;
+    border-right: 2px solid #CCC;
+    padding-right: 3px;
+    margin-right: 6px;
+    background: #FFF;
+}
+ 
+span.code{
+    border: 1px solid #EEE;
+    border-radius: 2em;
+    background: none;
+    padding: 0 .4em;
+    font-size: 85%;
+}
+ 
+.code span.comment{  color: #008000; }
+.code span.doccomment{  color: #008060; }
+.code span.value,
+.code span.literal,
+.code span.digit{  color: #000099; }
+.code span.invalid{
+    color: #F00;
+    font-weight: bold;
+}
+.code span.attribute{  color: #0060FF; }
+.code span.definition,
+.code span.statement{  color: #1518FF; }
+.code span.type{  color: #0080AA; }
+.code span.string,
+.code span.char{  color: #A31515; }
+.code span.directive{  color: #02B902; }
+ 
+.code.css span.idSelector{  color: #996300; }
+.code.css span.browserDefinition{  color: #2528FF; }
+ 
+.code pre{
+    border: none;
+    background: none;
+}
+.code a{
+    color: inherit;
+    border-bottom: 1px dotted;
+    display: inline-block;
+    height: 1.28em;
+}
+.code a:hover{
+    text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+}
+.code a.newpage,
+.code a.newpage:hover{  color: #F00; }
+ 
+/* * Kinds of Code Blocks * */
+.code.code-primary, .code-primary .code{  border-color: #BAD6F2; }
+div.code.code-primary span.line::before,
+.code-primary .code span.line::before{  border-color: #BAD6F2; }
+div.code.code-primary span.line:hover,
+.code-primary .code span.line:hover{  background-color: rgba(66, 139, 202, .05); }
+ 
+.code.code-success, .code-success .code{  border-color: #D6E9C6; }
+div.code.code-success span.line::before,
+.code-success .code span.line::before{  border-color: #D6E9C6; }
+div.code.code-success span.line:hover,
+.code-success .code span.line:hover{  background-color: rgba(92, 184, 92, .06); }
+ 
+.code.code-danger, .code-danger .code{  border-color: #EBCCD1; }
+div.code.code-danger span.line::before,
+.code-danger .code span.line::before{  border-color: #EBCCD1; }
+div.code.code-danger span.line:hover,
+.code-danger .code span.line:hover{  background-color: rgba(217, 83, 79,.05); }
+ 
+.code.code-info, .code-info .code{  border-color: #BCE8F1; }
+div.code.code-info span.line::before,
+.code-info .code span.line::before{  border-color: #BCE8F1; }
+div.code.code-info span.line:hover,
+.code-info .code span.line:hover{  background-color: rgba(91, 192, 222, .07); }
+ 
+.code.code-warning, .code-warning .code{  border-color: #FAEBCC; }
+div.code.code-warning span.line::before,
+.code-warning .code span.line::before{  border-color: #FAEBCC; }
+div.code.code-warning span.line:hover,
+.code-warning .code span.line:hover{  background-color: rgba(240, 173, 78, .08); }

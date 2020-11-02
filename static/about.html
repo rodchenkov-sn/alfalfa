@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="about.css">
+    <title>About Alfalfa</title>
+</head>
+<body>
+    <h1>About Alfalfa</h1>
+    <p>Alfalfa is a RESTful web service for smart thermometers. 
+        Source code can be found on <a href="https://github.com/rodchenkov-sn/alfalfa" target="blank">Github</a>.
+    <h3>Create new user</h3>
+    <p>POST to <i>/api/users</i> json with login and password for a new user</p>
+    <div class="code cpp">
+        <span class="line">{</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"user_login"</span>,</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"password"</span>: <span class="string">"user_password"</span></span>
+        <span class="line">}</span>
+    </div>
+    <h3>Add measurement for a user</h3>
+    <p>POST to <i>/api/measurements</i> json with temperature, timestamp and user info</p>
+    <div class="code cpp">
+        <span class="line">{</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"temperature"</span>: <span class="digit">36.6</span>,</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"timestamp"</span>: <span class="string">"2012-04-23T18:25:43.511Z"</span>,</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"user"</span>: {</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"login"</span>,</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"password"</span>: <span class="string">"password"</span></span>
+        <span class="line">&nbsp;&nbsp; }</span>
+        <span class="line">}</span>
+    </div>
+    <h3>Get all measurements for a user</h3>
+    <p>GET from <i>/api/measurements</i>. Pass json with login and password. As a result you will get</p>
+    <div class="code cpp">
+        <span class="line">[</span>
+        <span class="line">&nbsp; {</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"temperature"</span>: <span class="digit">36.6</span>,</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"timestamp"</span>: <span class="string">"2012-04-23T18:25:43.511Z"</span></span>
+        <span class="line">&nbsp; },</span>
+        <span class="line">&nbsp; {</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"temperature"</span>: <span class="digit">37.7</span>,</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"timestamp"</span>: <span class="string">"2018-10-23T20:11:12.111Z"</span></span>
+        <span class="line">&nbsp; },</span>
+        <span class="line">&nbsp; <span class="comment">// ...</span></span>
+        <span class="line">]</span>
+    </div>
+    <p>Pagination is not available, but if you want to impement it, create a pull request to the 
+        <a href="https://github.com/rodchenkov-sn/alfalfa" target="blank">repo</a></p>
+</body>
+</html>
