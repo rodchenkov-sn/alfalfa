@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/rodchenkov-sn/alfalfa/auth"
 	"github.com/rodchenkov-sn/alfalfa/service"
 	"gopkg.in/ini.v1"
 	"log"
 	"net/http"
-	"os"
 )
 
 func addUser(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
@@ -55,6 +55,24 @@ func getMeasurements(repository *service.Repository, writer http.ResponseWriter,
 	}
 }
 
+func authUser(tokenGenerator *auth.TokenGenerator, writer http.ResponseWriter, request *http.Request) {
+	var authInfo service.AuthInfo
+	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	token, err := tokenGenerator.GenerateToken(authInfo)
+	if err != nil {
+		writer.WriteHeader(http.StatusNotAcceptable)
+		log.Println(err)
+		return
+	}
+	if _, err := writer.Write([]byte(token)); err != nil {
+		writer.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+}
+
 func readSettings(file string) service.RepositorySettings {
 	settings, err := ini.Load(file)
 	if err != nil {
@@ -82,7 +100,8 @@ func main() {
 		defer repository.Disconnect()
 
 		router := mux.NewRouter()
-		router.HandleFunc("/api/users", func(w http.ResponseWriter, r *http.Request) {
+
+		router.HandleFunc("/api/users/register", func(w http.ResponseWriter, r *http.Request) {
 			addUser(repository, w, r)
 		}).Methods("POST")
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
@@ -91,11 +110,19 @@ func main() {
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
 			getMeasurements(repository, w, r)
 		})
+
+
+		tokenGenerator := auth.NewTokenGenerator(repository)
+
+		router.HandleFunc("/api/users/auth", func(w http.ResponseWriter, r *http.Request) {
+			authUser(tokenGenerator, w, r)
+		})
+
 		router.Handle("/home/{rest}",
 			http.StripPrefix("/home/", http.FileServer(http.Dir("./static/"))))
 
-		port := os.Getenv("PORT")
-		log.Fatal(http.ListenAndServe(":" + port, router))
+		// port := os.Getenv("PORT")
+		log.Fatal(http.ListenAndServe(":8080", router))
 	}
 }
 

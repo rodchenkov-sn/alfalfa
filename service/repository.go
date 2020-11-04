@@ -33,7 +33,7 @@ func (r *Repository) AddUser(info AuthInfo) error {
 func (r *Repository) AddMeasurement(measurement MeasurementWithAuth) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := r.authenticate(ctx, *measurement.User); err != nil {
+	if err := r.Authenticate(ctx, *measurement.User); err != nil {
 		return err
 	}
 	_, err := r.Measurements.InsertOne(ctx, bson.M{
@@ -47,7 +47,7 @@ func (r *Repository) AddMeasurement(measurement MeasurementWithAuth) error {
 func (r *Repository) GetMeasurements(info AuthInfo) ([]Measurement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := r.authenticate(ctx, info); err != nil {
+	if err := r.Authenticate(ctx, info); err != nil {
 		return nil, err
 	}
 	cur, err := r.Measurements.Find(ctx, bson.M{"login": info.Login})
@@ -70,7 +70,7 @@ func (r *Repository) GetMeasurements(info AuthInfo) ([]Measurement, error) {
 	return measurements, nil
 }
 
-func (r *Repository) authenticate(ctx context.Context, info AuthInfo) error {
+func (r *Repository) Authenticate(ctx context.Context, info AuthInfo) error {
 	user := r.Users.FindOne(ctx, bson.M{"login": info.Login})
 	if user.Err() != nil {
 		return UserNotfoundError{Login: info.Login}
