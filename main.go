@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/rodchenkov-sn/alfalfa/auth"
+	"github.com/rodchenkov-sn/alfalfa/common"
 	"github.com/rodchenkov-sn/alfalfa/service"
 	"gopkg.in/ini.v1"
 	"log"
@@ -11,7 +12,7 @@ import (
 )
 
 func addUser(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var authInfo service.AuthInfo
+	var authInfo common.AuthInfo
 	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -23,26 +24,35 @@ func addUser(repository *service.Repository, writer http.ResponseWriter, request
 	}
 }
 
-func addMeasurement(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var measurementWithAuth service.MeasurementWithAuth
-	if json.NewDecoder(request.Body).Decode(&measurementWithAuth) != nil {
+func addMeasurement(tokenManager *auth.TokenManager, repository *service.Repository,
+					writer http.ResponseWriter, request *http.Request) {
+	var measurement common.Measurement
+	if json.NewDecoder(request.Body).Decode(&measurement) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if err := repository.AddMeasurement(measurementWithAuth); err != nil {
+	token := request.Header.Get("Bearer")
+	login, err := tokenManager.ValidateToken(token)
+	if err != nil {
+		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
+		return
+	}
+	if err := repository.AddMeasurement(login, measurement); err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
 		return
 	}
 }
 
-func getMeasurements(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var authInfo service.AuthInfo
-	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
-		writer.WriteHeader(http.StatusBadRequest)
+func getMeasurements(tokenManager *auth.TokenManager, repository *service.Repository,
+	                 writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Bearer")
+	login, err := tokenManager.ValidateToken(token)
+	if err != nil {
+		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
 		return
 	}
-	measurements, err := repository.GetMeasurements(authInfo)
+	measurements, err := repository.GetMeasurements(login)
 	if err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
@@ -55,13 +65,13 @@ func getMeasurements(repository *service.Repository, writer http.ResponseWriter,
 	}
 }
 
-func authUser(tokenGenerator *auth.TokenGenerator, writer http.ResponseWriter, request *http.Request) {
-	var authInfo service.AuthInfo
+func authUser(tokenManager *auth.TokenManager, writer http.ResponseWriter, request *http.Request) {
+	var authInfo common.AuthInfo
 	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	token, err := tokenGenerator.GenerateToken(authInfo)
+	token, err := tokenManager.GenerateToken(authInfo)
 	if err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
@@ -104,18 +114,17 @@ func main() {
 		router.HandleFunc("/api/users/register", func(w http.ResponseWriter, r *http.Request) {
 			addUser(repository, w, r)
 		}).Methods("POST")
+
+		tokenManager := auth.NewTokenManager(repository, "secret_key")
+
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
-			addMeasurement(repository, w, r)
+			addMeasurement(tokenManager, repository, w, r)
 		}).Methods("POST")
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
-			getMeasurements(repository, w, r)
+			getMeasurements(tokenManager, repository, w, r)
 		})
-
-
-		tokenGenerator := auth.NewTokenGenerator(repository)
-
 		router.HandleFunc("/api/users/auth", func(w http.ResponseWriter, r *http.Request) {
-			authUser(tokenGenerator, w, r)
+			authUser(tokenManager, w, r)
 		})
 
 		router.Handle("/home/{rest}",

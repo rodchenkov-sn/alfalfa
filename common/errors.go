@@ -1,4 +1,4 @@
-package service
+package common
 
 type UserAlreadyExistError struct {
 	Login string
@@ -22,4 +22,16 @@ type InvalidPasswordError struct {
 
 func (e InvalidPasswordError) Error() string {
 	return "Password for " + e.Login + " was invalid"
+}
+
+type TokenExpiredError struct {}
+
+func (e TokenExpiredError) Error() string {
+	return "Token expired"
+}
+
+type InvalidTokenError struct {}
+
+func (e InvalidTokenError) Error() string {
+	return "Invalid token"
 }

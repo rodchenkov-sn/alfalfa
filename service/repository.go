@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/rodchenkov-sn/alfalfa/common"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,7 +17,25 @@ type Repository struct {
 	Measurements *mongo.Collection
 }
 
-func (r *Repository) AddUser(info AuthInfo) error {
+func (r *Repository) Authenticate(info common.AuthInfo) (exist bool, valid bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	user := r.Users.FindOne(ctx, bson.M{"login": info.Login})
+	if user.Err() != nil {
+		return false, false
+	}
+	var realInfo common.AuthInfo
+	if err := user.Decode(&realInfo); err != nil {
+		panic(err)
+	}
+	if ComparePasswords(realInfo.Password, info.Password) {
+		return true, true
+	} else {
+		return true, false
+	}
+}
+
+func (r *Repository) AddUser(info common.AuthInfo) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if r.Users.FindOne(ctx, bson.M{"login": info.Login}).Err() != nil {
@@ -27,30 +46,24 @@ func (r *Repository) AddUser(info AuthInfo) error {
 		_, err = r.Users.InsertOne(ctx, bson.M{"login": info.Login, "password": hashedPassword})
 		return err
 	}
-	return UserAlreadyExistError{}
+	return common.UserAlreadyExistError{}
 }
 
-func (r *Repository) AddMeasurement(measurement MeasurementWithAuth) error {
+func (r *Repository) AddMeasurement(login string, measurement common.Measurement) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := r.Authenticate(ctx, *measurement.User); err != nil {
-		return err
-	}
 	_, err := r.Measurements.InsertOne(ctx, bson.M{
-		"login": measurement.User.Login,
+		"login": login,
 		"temperature": measurement.Temperature,
 		"timestamp": measurement.Timestamp,
 	})
 	return err
 }
 
-func (r *Repository) GetMeasurements(info AuthInfo) ([]Measurement, error) {
+func (r *Repository) GetMeasurements(login string) ([]common.Measurement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := r.Authenticate(ctx, info); err != nil {
-		return nil, err
-	}
-	cur, err := r.Measurements.Find(ctx, bson.M{"login": info.Login})
+	cur, err := r.Measurements.Find(ctx, bson.M{"login": login})
 	if err != nil {
 		return nil, err
 	}
@@ -59,31 +72,15 @@ func (r *Repository) GetMeasurements(info AuthInfo) ([]Measurement, error) {
 			panic(err)
 		}
 	}()
-	var measurements []Measurement
+	var measurements []common.Measurement
 	for cur.Next(ctx) {
-		var measurement Measurement
+		var measurement common.Measurement
 		if err := cur.Decode(&measurement); err != nil {
 			return nil, err
 		}
 		measurements = append(measurements, measurement)
 	}
 	return measurements, nil
-}
-
-func (r *Repository) Authenticate(ctx context.Context, info AuthInfo) error {
-	user := r.Users.FindOne(ctx, bson.M{"login": info.Login})
-	if user.Err() != nil {
-		return UserNotfoundError{Login: info.Login}
-	}
-	var realInfo AuthInfo
-	if err := user.Decode(&realInfo); err != nil {
-		panic(err)
-	}
-	if ComparePasswords(realInfo.Password, info.Password) {
-		return nil
-	} else {
-		return InvalidPasswordError{Login: info.Login}
-	}
 }
 
 func (r *Repository) Disconnect() {

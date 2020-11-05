@@ -11,11 +11,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d4c986d2-0a6f-43fb-a45f-337715c63645" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/auth/token_manager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/token_generator.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/dto.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/errors.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/settings.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +60,11 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\rodchenkov.sn\go\src\github.com\rodchenkov-sn\alfalfa\common" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="go build github.com/rodchenkov-sn/alfalfa" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="alfalfa" />
@@ -97,22 +105,22 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1604342252720" />
-    <state width="1493" height="155" key="GridCell.Tab.0.bottom" timestamp="1604530873078">
+    <state width="1493" height="313" key="GridCell.Tab.0.bottom" timestamp="1604536176151">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="155" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604530873078" />
-    <state width="1493" height="155" key="GridCell.Tab.0.center" timestamp="1604530873078">
+    <state width="1493" height="313" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604536176151" />
+    <state width="1493" height="313" key="GridCell.Tab.0.center" timestamp="1604536176151">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="155" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604530873078" />
-    <state width="1493" height="155" key="GridCell.Tab.0.left" timestamp="1604530873078">
+    <state width="1493" height="313" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604536176151" />
+    <state width="1493" height="313" key="GridCell.Tab.0.left" timestamp="1604536176151">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="155" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604530873078" />
-    <state width="1493" height="155" key="GridCell.Tab.0.right" timestamp="1604530873078">
+    <state width="1493" height="313" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604536176151" />
+    <state width="1493" height="313" key="GridCell.Tab.0.right" timestamp="1604536176151">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="155" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604530873078" />
+    <state width="1493" height="313" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604536176151" />
     <state width="1493" height="277" key="GridCell.Tab.1.bottom" timestamp="1604312587231">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
