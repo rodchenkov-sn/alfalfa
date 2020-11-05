@@ -10,43 +10,70 @@ import (
 	"time"
 )
 
-type Repository struct {
-	Client       *mongo.Client
-	Settings     RepositorySettings
-	Users        *mongo.Collection
-	Measurements *mongo.Collection
+type AuthResult struct {
+	Login         string
+	Exist         bool
+	ValidPassword bool
+	Organization  bool
+	Policy        *common.OrganizationPolicy
 }
 
-func (r *Repository) Authenticate(info common.AuthInfo) (exist bool, valid bool) {
+type Repository struct {
+	Client        *mongo.Client
+	Users         *mongo.Collection
+	Measurements  *mongo.Collection
+}
+
+func (r *Repository) Authenticate(credentials common.Credentials) AuthResult {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	user := r.Users.FindOne(ctx, bson.M{"login": info.Login})
+	user := r.Users.FindOne(ctx, bson.M{"login": credentials.Login})
 	if user.Err() != nil {
-		return false, false
+		return AuthResult{Login: credentials.Login, Exist: false}
 	}
-	var realInfo common.AuthInfo
+	var realInfo common.Credentials
 	if err := user.Decode(&realInfo); err != nil {
 		panic(err)
 	}
-	if ComparePasswords(realInfo.Password, info.Password) {
-		return true, true
+	if ComparePasswords(realInfo.Password, credentials.Password) {
+		return AuthResult{Login: credentials.Login, Exist: true, ValidPassword: true}
 	} else {
-		return true, false
+		return AuthResult{Login: credentials.Login, Exist: true, ValidPassword: false}
 	}
 }
 
-func (r *Repository) AddUser(info common.AuthInfo) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	if r.Users.FindOne(ctx, bson.M{"login": info.Login}).Err() != nil {
-		hashedPassword, err := HashPassword(info.Password)
-		if err != nil {
-			return err
-		}
-		_, err = r.Users.InsertOne(ctx, bson.M{"login": info.Login, "password": hashedPassword})
+func (r *Repository) AddUser(credentials common.Credentials) error {
+	hashedPassword, err := HashPassword(credentials.Password)
+	if err != nil {
 		return err
 	}
-	return common.UserAlreadyExistError{}
+	return r.insertIntoUsers(credentials, bson.M{
+		"login":    credentials.Login,
+		"password": hashedPassword,
+	})
+}
+
+func (r* Repository) AddOrganization(organization common.Organization) error {
+	hashedPassword, err := HashPassword(organization.Credentials.Password)
+	if err != nil {
+		return err
+	}
+	return r.insertIntoUsers(organization.Credentials, bson.M{
+		"login":    organization.Credentials.Login,
+		"password": hashedPassword,
+		"policy":   organization.Policy,
+	})
+}
+
+func (r *Repository) insertIntoUsers(credentials common.Credentials, document bson.M) error {
+	authResult := r.Authenticate(credentials)
+	if authResult.Exist {
+		return common.UserAlreadyExistError{Login: credentials.Login}
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := r.Users.InsertOne(ctx, document)
+	return err
 }
 
 func (r *Repository) AddMeasurement(login string, measurement common.Measurement) error {
@@ -100,16 +127,15 @@ func NewRepository(settings RepositorySettings) (*Repository, error) {
 		return nil, err
 	}
 	users := client.
-		Database(settings.UsersSettings.Database).
-		Collection(settings.UsersSettings.Collection)
+		Database(settings.UsersPath.Database).
+		Collection(settings.UsersPath.Collection)
 	measurements := client.
-		Database(settings.MeasurementsSettings.Database).
-		Collection(settings.MeasurementsSettings.Collection)
+		Database(settings.MeasurementsPath.Database).
+		Collection(settings.MeasurementsPath.Collection)
 	return &Repository{
-		Client:       client,
-		Settings:     settings,
-		Users:        users,
-		Measurements: measurements,
+		Client:        client,
+		Users:         users,
+		Measurements:  measurements,
 	}, nil
 }
 

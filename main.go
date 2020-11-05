@@ -12,12 +12,25 @@ import (
 )
 
 func addUser(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var authInfo common.AuthInfo
+	var authInfo common.Credentials
 	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if err := repository.AddUser(authInfo); err != nil {
+		writer.WriteHeader(http.StatusNotAcceptable)
+		log.Println(err)
+		return
+	}
+}
+
+func addOrganization(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
+	var organization common.Organization
+	if json.NewDecoder(request.Body).Decode(&organization) != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err := repository.AddOrganization(organization); err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
 		return
@@ -66,7 +79,7 @@ func getMeasurements(tokenManager *auth.TokenManager, repository *service.Reposi
 }
 
 func authUser(tokenManager *auth.TokenManager, writer http.ResponseWriter, request *http.Request) {
-	var authInfo common.AuthInfo
+	var authInfo common.Credentials
 	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -90,11 +103,11 @@ func readSettings(file string) service.RepositorySettings {
 	}
 	return service.RepositorySettings{
 		Uri: settings.Section("").Key("db_link").String(),
-		UsersSettings: service.CollectionSettings{
+		UsersPath: service.CollectionPath{
 			Database:   settings.Section("users").Key("db_name").String(),
 			Collection: settings.Section("users").Key("collection_name").String(),
 		},
-		MeasurementsSettings: service.CollectionSettings{
+		MeasurementsPath: service.CollectionPath{
 			Database:   settings.Section("measurements").Key("db_name").String(),
 			Collection: settings.Section("measurements").Key("collection_name").String(),
 		},
@@ -111,11 +124,18 @@ func main() {
 
 		router := mux.NewRouter()
 
+		// registration handlers
+
 		router.HandleFunc("/api/users/register", func(w http.ResponseWriter, r *http.Request) {
 			addUser(repository, w, r)
 		}).Methods("POST")
+		router.HandleFunc("/api/organizations/register", func(w http.ResponseWriter, r *http.Request) {
+			addOrganization(repository, w, r)
+		}).Methods("POST")
 
 		tokenManager := auth.NewTokenManager(repository, "secret_key")
+
+		// measurement handlers
 
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
 			addMeasurement(tokenManager, repository, w, r)
@@ -123,9 +143,14 @@ func main() {
 		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
 			getMeasurements(tokenManager, repository, w, r)
 		})
-		router.HandleFunc("/api/users/auth", func(w http.ResponseWriter, r *http.Request) {
+
+		// authentication handlers
+
+		router.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
 			authUser(tokenManager, w, r)
 		})
+
+		// file handlers
 
 		router.Handle("/home/{rest}",
 			http.StripPrefix("/home/", http.FileServer(http.Dir("./static/"))))

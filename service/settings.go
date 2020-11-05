@@ -1,12 +1,12 @@
 package service
 
-type CollectionSettings struct {
+type CollectionPath struct {
 	Database   string
 	Collection string
 }
 
 type RepositorySettings struct {
-	Uri                  string
-	UsersSettings        CollectionSettings
-	MeasurementsSettings CollectionSettings
+	Uri               string
+	UsersPath         CollectionPath
+	MeasurementsPath  CollectionPath
 }

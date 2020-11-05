@@ -17,12 +17,12 @@ type TokenManager struct {
 	PrivateKey []byte
 }
 
-func (tm *TokenManager) GenerateToken(info common.AuthInfo) (string, error) {
-	exist, valid := tm.Repository.Authenticate(info)
-	if !exist {
+func (tm *TokenManager) GenerateToken(info common.Credentials) (string, error) {
+	authResults := tm.Repository.Authenticate(info)
+	if !authResults.Exist {
 		return "", common.UserNotfoundError{Login: info.Login}
 	}
-	if !valid {
+	if !authResults.ValidPassword {
 		return "", common.InvalidPasswordError{Login: info.Login}
 	}
 	claims := &Claims{
