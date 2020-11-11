@@ -14,8 +14,11 @@ type AuthResult struct {
 	Login         string
 	Exist         bool
 	ValidPassword bool
-	Organization  bool
-	Policy        *common.OrganizationPolicy
+}
+
+type Rights struct {
+	Write bool
+	Read  bool
 }
 
 type Repository struct {
@@ -24,55 +27,89 @@ type Repository struct {
 	Measurements  *mongo.Collection
 }
 
-func (r *Repository) Authenticate(credentials common.Credentials) AuthResult {
+func (r *Repository) AddSupervisor(login string, supervisors []common.Supervisor) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	user := r.Users.FindOne(ctx, bson.M{"login": credentials.Login})
-	if user.Err() != nil {
-		return AuthResult{Login: credentials.Login, Exist: false}
+	for _, supervisor := range supervisors {
+		_, err := r.Users.UpdateOne(
+			ctx,
+			bson.M{"login": login},
+			bson.M{
+				"$push": bson.M{"supervisors": supervisor.Login},
+			},
+		)
+		if err != nil {
+			return err
+		}
 	}
-	var realInfo common.Credentials
+	return nil
+}
+
+func (r *Repository) GetRights(issuer string, subject string) Rights {
+	if issuer == subject {
+		return Rights{Write: true, Read: true}
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	user := r.Users.FindOne(ctx, bson.M{"login": subject})
+	if user.Err() != nil {
+		return Rights{Read: false, Write: false}
+	}
+	var realInfo common.UserInfo
 	if err := user.Decode(&realInfo); err != nil {
 		panic(err)
 	}
-	if ComparePasswords(realInfo.Password, credentials.Password) {
-		return AuthResult{Login: credentials.Login, Exist: true, ValidPassword: true}
+	for _, supervisor := range realInfo.Supervisors {
+		if supervisor == issuer {
+			return Rights{Read: true, Write: true}
+		}
+	}
+	return Rights{Read: false, Write: false}
+}
+
+func (r *Repository) Authenticate(credentials common.Credentials) AuthResult {
+	return r.authenticate(credentials.Login, credentials.Password)
+}
+
+func (r *Repository) authenticate(login string, password string) AuthResult {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	user := r.Users.FindOne(ctx, bson.M{"login": login})
+	if user.Err() != nil {
+		return AuthResult{Login: login, Exist: false}
+	}
+	var realInfo common.UserInfo
+	if err := user.Decode(&realInfo); err != nil {
+		panic(err)
+	}
+	if ComparePasswords(realInfo.Password, password) {
+		return AuthResult{Login: login, Exist: true, ValidPassword: true}
 	} else {
-		return AuthResult{Login: credentials.Login, Exist: true, ValidPassword: false}
+		return AuthResult{Login: login, Exist: true, ValidPassword: false}
 	}
 }
 
-func (r *Repository) AddUser(credentials common.Credentials) error {
-	hashedPassword, err := HashPassword(credentials.Password)
+func (r *Repository) AddUser(info common.UserInfo) error {
+	hashedPassword, err := HashPassword(info.Password)
 	if err != nil {
 		return err
 	}
-	return r.insertIntoUsers(credentials, bson.M{
-		"login":    credentials.Login,
-		"password": hashedPassword,
-	})
-}
-
-func (r* Repository) AddOrganization(organization common.Organization) error {
-	hashedPassword, err := HashPassword(organization.Credentials.Password)
-	if err != nil {
-		return err
-	}
-	return r.insertIntoUsers(organization.Credentials, bson.M{
-		"login":    organization.Credentials.Login,
-		"password": hashedPassword,
-		"policy":   organization.Policy,
-	})
-}
-
-func (r *Repository) insertIntoUsers(credentials common.Credentials, document bson.M) error {
-	authResult := r.Authenticate(credentials)
+	authResult := r.authenticate(info.Login, info.Password)
 	if authResult.Exist {
-		return common.UserAlreadyExistError{Login: credentials.Login}
+		return common.UserAlreadyExistError{Login: info.Login}
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	_, err := r.Users.InsertOne(ctx, document)
+	var supervisors []string
+	if info.Supervisors != nil {
+		supervisors = info.Supervisors
+	}
+	_, err = r.Users.InsertOne(ctx, bson.M{
+		"login":       info.Login,
+		"password":    hashedPassword,
+		"supervisors": supervisors,
+	})
 	return err
 }
 

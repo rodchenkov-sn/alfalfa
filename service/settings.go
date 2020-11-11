@@ -10,3 +10,8 @@ type RepositorySettings struct {
 	UsersPath         CollectionPath
 	MeasurementsPath  CollectionPath
 }
+
+type ServerSettings struct {
+	RS         RepositorySettings
+	PrivateKey string
+}

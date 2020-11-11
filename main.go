@@ -9,28 +9,16 @@ import (
 	"gopkg.in/ini.v1"
 	"log"
 	"net/http"
+	"os"
 )
 
 func addUser(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var authInfo common.Credentials
+	var authInfo common.UserInfo
 	if json.NewDecoder(request.Body).Decode(&authInfo) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if err := repository.AddUser(authInfo); err != nil {
-		writer.WriteHeader(http.StatusNotAcceptable)
-		log.Println(err)
-		return
-	}
-}
-
-func addOrganization(repository *service.Repository, writer http.ResponseWriter, request *http.Request) {
-	var organization common.Organization
-	if json.NewDecoder(request.Body).Decode(&organization) != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err := repository.AddOrganization(organization); err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
 		return
@@ -45,12 +33,18 @@ func addMeasurement(tokenManager *auth.TokenManager, repository *service.Reposit
 		return
 	}
 	token := request.Header.Get("Bearer")
-	login, err := tokenManager.ValidateToken(token)
+	issuer, err := tokenManager.ValidateToken(token)
 	if err != nil {
 		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
 		return
 	}
-	if err := repository.AddMeasurement(login, measurement); err != nil {
+	subject := mux.Vars(request)["login"]
+	rights := repository.GetRights(issuer, subject)
+	if !rights.Write {
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	if err := repository.AddMeasurement(subject, measurement); err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
 		return
@@ -60,12 +54,18 @@ func addMeasurement(tokenManager *auth.TokenManager, repository *service.Reposit
 func getMeasurements(tokenManager *auth.TokenManager, repository *service.Repository,
 	                 writer http.ResponseWriter, request *http.Request) {
 	token := request.Header.Get("Bearer")
-	login, err := tokenManager.ValidateToken(token)
+	issuer, err := tokenManager.ValidateToken(token)
 	if err != nil {
 		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
 		return
 	}
-	measurements, err := repository.GetMeasurements(login)
+	subject := mux.Vars(request)["login"]
+	rights := repository.GetRights(issuer, subject)
+	if !rights.Read {
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	measurements, err := repository.GetMeasurements(subject)
 	if err != nil {
 		writer.WriteHeader(http.StatusNotAcceptable)
 		log.Println(err)
@@ -96,12 +96,31 @@ func authUser(tokenManager *auth.TokenManager, writer http.ResponseWriter, reque
 	}
 }
 
-func readSettings(file string) service.RepositorySettings {
+func addSupervisor(tokenManager *auth.TokenManager, repository *service.Repository,
+	               writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Bearer")
+	issuer, err := tokenManager.ValidateToken(token)
+	if err != nil {
+		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
+		return
+	}
+	var supervisors []common.Supervisor
+	if json.NewDecoder(request.Body).Decode(&supervisors) != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if repository.AddSupervisor(issuer, supervisors) != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+
+func readSettings(file string) service.ServerSettings {
 	settings, err := ini.Load(file)
 	if err != nil {
 		panic(err)
 	}
-	return service.RepositorySettings{
+	rs := service.RepositorySettings{
 		Uri: settings.Section("").Key("db_link").String(),
 		UsersPath: service.CollectionPath{
 			Database:   settings.Section("users").Key("db_name").String(),
@@ -112,11 +131,18 @@ func readSettings(file string) service.RepositorySettings {
 			Collection: settings.Section("measurements").Key("collection_name").String(),
 		},
 	}
+	privateKey := settings.Section("").Key("private_key").String()
+	return service.ServerSettings{
+		RS: rs,
+		PrivateKey: privateKey,
+	}
 }
 
 func main() {
 
-	repository, err := service.NewRepository(readSettings("settings.ini"))
+	settings := readSettings("settings.ini")
+
+	repository, err := service.NewRepository(settings.RS)
 
 	if err == nil {
 
@@ -126,23 +152,26 @@ func main() {
 
 		// registration handlers
 
-		router.HandleFunc("/api/users/register", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/api/register", func(w http.ResponseWriter, r *http.Request) {
 			addUser(repository, w, r)
 		}).Methods("POST")
-		router.HandleFunc("/api/organizations/register", func(w http.ResponseWriter, r *http.Request) {
-			addOrganization(repository, w, r)
-		}).Methods("POST")
 
-		tokenManager := auth.NewTokenManager(repository, "secret_key")
+		tokenManager := auth.NewTokenManager(repository, settings.PrivateKey)
 
 		// measurement handlers
 
-		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/api/{login}/measurements", func(w http.ResponseWriter, r *http.Request) {
 			addMeasurement(tokenManager, repository, w, r)
 		}).Methods("POST")
-		router.HandleFunc("/api/measurements", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/api/{login}/measurements", func(w http.ResponseWriter, r *http.Request) {
 			getMeasurements(tokenManager, repository, w, r)
 		})
+
+		// supervisors handlers
+
+		router.HandleFunc("/api/{login}/supervisors", func(w http.ResponseWriter, r *http.Request) {
+			addSupervisor(tokenManager, repository, w, r)
+		}).Methods("POST")
 
 		// authentication handlers
 
@@ -155,8 +184,8 @@ func main() {
 		router.Handle("/home/{rest}",
 			http.StripPrefix("/home/", http.FileServer(http.Dir("./static/"))))
 
-		// port := os.Getenv("PORT")
-		log.Fatal(http.ListenAndServe(":8080", router))
+		port := os.Getenv("PORT")
+		log.Fatal(http.ListenAndServe(":" + port, router))
 	}
 }
 

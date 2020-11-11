@@ -12,14 +12,12 @@ type Measurement struct {
 	Timestamp   time.Time `json:"timestamp"`
 }
 
-type Organization struct {
-	Credentials Credentials        `json:"credentials"`
-	Policy      OrganizationPolicy `json:"policy"`
+type UserInfo struct {
+	Login       string   `json:"login"`
+	Password    string   `json:"password"`
+	Supervisors []string `json:"supervisors"`
 }
 
-type OrganizationPolicy struct {
-	FreeJoin           bool `json:"free_join"`
-	FreeLeave          bool `json:"free_leave"`
-	CanGetMeasurements bool `json:"can_get_measurements"`
-	CanAddMeasurements bool `json:"can_add_measurements"`
+type Supervisor struct {
+	Login string `json:"login"`
 }
