@@ -11,7 +11,18 @@
     <p>Alfalfa is a RESTful web service for smart thermometers. 
         Source code can be found on <a href="https://github.com/rodchenkov-sn/alfalfa" target="blank">Github</a>.
     <h3>Create new user</h3>
-    <p>POST to <i>/api/users</i> json with login and password for a new user</p>
+    <p>POST to <i>/api/register</i> a json with login and password for a new user, and, optionally, a list of supervisors</p>
+    <div class="code cpp">
+        <span class="line">{</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"user_login"</span>,</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"password"</span>: <span class="string">"user_password"</span>,</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"supervisors"</span>: [</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"supervisor_login"</span></span>
+        <span class="line">&nbsp;&nbsp;]</span>
+        <span class="line">}</span>
+    </div>
+    <h3>Auth user</h3>
+    <p>GET from <i>/api/auth</i>. Path a json with login and password</p>
     <div class="code cpp">
         <span class="line">{</span>
         <span class="line">&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"user_login"</span>,</span>
@@ -19,19 +30,16 @@
         <span class="line">}</span>
     </div>
     <h3>Add measurement for a user</h3>
-    <p>POST to <i>/api/measurements</i> json with temperature, timestamp and user info</p>
+    <p>POST to <i>/api/{target_user}/measurements</i> a json with temperature and timestamp. 
+        Additionally, add a token as a value for the "Bearer" in the request header</p>
     <div class="code cpp">
         <span class="line">{</span>
         <span class="line">&nbsp;&nbsp;<span class="string">"temperature"</span>: <span class="digit">36.6</span>,</span>
-        <span class="line">&nbsp;&nbsp;<span class="string">"timestamp"</span>: <span class="string">"2012-04-23T18:25:43.511Z"</span>,</span>
-        <span class="line">&nbsp;&nbsp;<span class="string">"user"</span>: {</span>
-        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"login"</span>,</span>
-        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"password"</span>: <span class="string">"password"</span></span>
-        <span class="line">&nbsp;&nbsp; }</span>
+        <span class="line">&nbsp;&nbsp;<span class="string">"timestamp"</span>: <span class="string">"2012-04-23T18:25:43.511Z"</span></span>
         <span class="line">}</span>
     </div>
     <h3>Get all measurements for a user</h3>
-    <p>GET from <i>/api/measurements</i>. Pass json with login and password. As a result you will get</p>
+    <p>GET from <i>/api/{target_user}/measurements</i>. Add a Bearer to the header. As a result you will get</p>
     <div class="code cpp">
         <span class="line">[</span>
         <span class="line">&nbsp; {</span>
@@ -47,5 +55,27 @@
     </div>
     <p>Pagination is not available, but if you want to impement it, create a pull request to the 
         <a href="https://github.com/rodchenkov-sn/alfalfa" target="blank">repo</a></p>
+    <h3>Supervising</h3>
+    <p>Each user has a list of supervisors - users, who can read and write to the measurement list of the user. 
+        If you are supervisor, you can POST to and GET from <i>/api/{user_you_supervise}/measurements</i>.</p>
+    <p>To add a new supervisor for a user, the user need to POST to <i>/api/{user}/supervisors</i> a list of supervisor logins, as shown below</p>
+    <div class="code cpp">
+        <span class="line">[</span>
+        <span class="line">&nbsp; {</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"supervisor_1"</span></span>
+        <span class="line">&nbsp; },</span>
+        <span class="line">&nbsp; {</span>
+        <span class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"login"</span>: <span class="string">"supervisor_2"</span></span>
+        <span class="line">&nbsp; },</span>
+        <span class="line">&nbsp; <span class="comment">// ...</span></span>
+        <span class="line">]</span>
+    </div>
+    <h3>ToDo list</h3>
+    <ul>
+        <li>Pagination</li>
+        <li>User editing</li>
+        <li>Supervisor deletion</li>
+        <li>...</li>
+    </ul>
 </body>
 </html>
