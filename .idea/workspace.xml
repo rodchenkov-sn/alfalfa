@@ -10,7 +10,18 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4c986d2-0a6f-43fb-a45f-337715c63645" name="Default Changelist" comment="" />
+    <list default="true" id="d9732ed1-33fc-46e8-80f4-a1b49acd26ec" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/network/endpoints.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/integration_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/unit_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/settings.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/settings.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/settings.ini" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,12 +34,17 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" path="C:\Go" />
+  <component name="GOROOT" path="/usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="false" />
+    <option name="urls">
+      <list>
+        <option value="file://$USER_HOME$/go" />
+      </list>
+    </option>
   </component>
   <component name="ProjectId" id="1jhq6tCm9u0hKsYOJlnU0TbzNga" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -39,7 +55,12 @@
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
@@ -50,25 +71,73 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="go.sdk" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/application" />
       <recent name="C:\Users\rodchenkov.sn\go\src\github.com\rodchenkov-sn\alfalfa\common" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="go build github.com/rodchenkov-sn/alfalfa" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.go test github.com/rodchenkov-sn/alfalfa/tests">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="alfalfa" />
       <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
+      <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/main.go" />
-      <package value="github.com/rodchenkov-sn/alfalfa" />
-      <directory value="$PROJECT_DIR$" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestHashing in unit_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="alfalfa" />
+      <working_directory value="$PROJECT_DIR$/tests" />
+      <framework value="gotest" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/tests/unit_test.go" />
+      <pattern value="^TestHashing$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestLogin in github.com/rodchenkov-sn/alfalfa/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="alfalfa" />
+      <working_directory value="$PROJECT_DIR$/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rodchenkov-sn/alfalfa/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestLogin$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestPostMeasurments in github.com/rodchenkov-sn/alfalfa/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="alfalfa" />
+      <working_directory value="$PROJECT_DIR$/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rodchenkov-sn/alfalfa/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestPostMeasurments$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/rodchenkov-sn/alfalfa/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="alfalfa" />
+      <working_directory value="$PROJECT_DIR$/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rodchenkov-sn/alfalfa/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/rodchenkov-sn/alfalfa" />
+        <item itemvalue="Go Test.go test github.com/rodchenkov-sn/alfalfa/tests" />
+        <item itemvalue="Go Test.TestPostMeasurments in github.com/rodchenkov-sn/alfalfa/tests" />
+        <item itemvalue="Go Test.TestHashing in unit_test.go" />
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Test.TestLogin in github.com/rodchenkov-sn/alfalfa/tests" />
       </list>
     </recent_temporary>
   </component>
@@ -77,10 +146,22 @@
     <configuration />
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d9732ed1-33fc-46e8-80f4-a1b49acd26ec" name="Default Changelist" comment="" />
+      <created>1608116220648</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608116220648</updated>
+      <workItem from="1608116222130" duration="67000" />
+      <workItem from="1608117185280" duration="582000" />
+      <workItem from="1608117839940" duration="9195000" />
+      <workItem from="1608146070526" duration="4958000" />
+      <workItem from="1608151679952" duration="322000" />
+    </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -98,45 +179,80 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
+    <state x="520" y="116" key="#GOPATH" timestamp="1608118366895">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="520" y="116" key="#GOPATH/0.25.1440.875@0.25.1440.875" timestamp="1608118366895" />
+    <state x="520" y="387" key="#GOROOT" timestamp="1608118132975">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="520" y="387" key="#GOROOT/0.25.1440.875@0.25.1440.875" timestamp="1608118132975" />
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608117766766">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1440.875@0.25.1440.875" timestamp="1608117766766" />
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604342252720">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1604342252720" />
-    <state width="1358" height="221" key="GridCell.Tab.0.bottom" timestamp="1608151370446">
+    <state width="1358" height="221" key="GridCell.Tab.0.bottom" timestamp="1608151645177">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1608151370446" />
-    <state width="1358" height="221" key="GridCell.Tab.0.center" timestamp="1608151370445">
+    <state width="1358" height="221" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1608151645177" />
+    <state width="1358" height="221" key="GridCell.Tab.0.center" timestamp="1608151645176">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1608151370445" />
-    <state width="1358" height="221" key="GridCell.Tab.0.left" timestamp="1608151370444">
+    <state width="1358" height="221" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1608151645176" />
+    <state width="1358" height="221" key="GridCell.Tab.0.left" timestamp="1608151645176">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1608151370444" />
-    <state width="1358" height="221" key="GridCell.Tab.0.right" timestamp="1608151370445">
+    <state width="1358" height="221" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1608151645176" />
+    <state width="1358" height="221" key="GridCell.Tab.0.right" timestamp="1608151645177">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1608151370445" />
-    <state width="1493" height="277" key="GridCell.Tab.1.bottom" timestamp="1604312587231">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state width="1358" height="221" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1608151645177" />
+    <state width="1358" height="275" key="GridCell.Tab.1.bottom" timestamp="1608151645168">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="277" key="GridCell.Tab.1.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604312587231" />
-    <state width="1493" height="277" key="GridCell.Tab.1.center" timestamp="1604312587231">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state width="1358" height="275" key="GridCell.Tab.1.bottom/0.25.1440.875@0.25.1440.875" timestamp="1608151645168" />
+    <state width="1358" height="275" key="GridCell.Tab.1.center" timestamp="1608151645167">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="277" key="GridCell.Tab.1.center/0.0.1536.864@0.0.1536.864" timestamp="1604312587231" />
-    <state width="1493" height="277" key="GridCell.Tab.1.left" timestamp="1604312587231">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state width="1358" height="275" key="GridCell.Tab.1.center/0.25.1440.875@0.25.1440.875" timestamp="1608151645167" />
+    <state width="1358" height="275" key="GridCell.Tab.1.left" timestamp="1608151645167">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="277" key="GridCell.Tab.1.left/0.0.1536.864@0.0.1536.864" timestamp="1604312587231" />
-    <state width="1493" height="277" key="GridCell.Tab.1.right" timestamp="1604312587231">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state width="1358" height="275" key="GridCell.Tab.1.left/0.25.1440.875@0.25.1440.875" timestamp="1608151645167" />
+    <state width="1358" height="275" key="GridCell.Tab.1.right" timestamp="1608151645168">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="277" key="GridCell.Tab.1.right/0.0.1536.864@0.0.1536.864" timestamp="1604312587231" />
+    <state width="1358" height="275" key="GridCell.Tab.1.right/0.25.1440.875@0.25.1440.875" timestamp="1608151645168" />
+    <state x="229" y="89" key="SettingsEditor" timestamp="1608117797870">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="229" y="89" key="SettingsEditor/0.25.1440.875@0.25.1440.875" timestamp="1608117797870" />
+    <state x="498" y="308" key="com.goide.refactor.move.GoMoveDeclarationDialog" timestamp="1608146563975">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="498" y="308" key="com.goide.refactor.move.GoMoveDeclarationDialog/0.25.1440.875@0.25.1440.875" timestamp="1608146563975" />
+    <state x="385" y="210" width="670" height="676" key="search.everywhere.popup" timestamp="1608122533069">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="385" y="210" width="670" height="676" key="search.everywhere.popup/0.25.1440.875@0.25.1440.875" timestamp="1608122533069" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="DlvErrorBreakpoint" />
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
