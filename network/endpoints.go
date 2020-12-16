@@ -6,6 +6,7 @@ import (
 	"github.com/rodchenkov-sn/alfalfa/auth"
 	"github.com/rodchenkov-sn/alfalfa/common"
 	"github.com/rodchenkov-sn/alfalfa/service"
+	"gopkg.in/ini.v1"
 	"log"
 	"net/http"
 )
@@ -102,7 +103,7 @@ func AddSupervisor(tokenManager *auth.TokenManager, repository *service.Reposito
 		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
 		return
 	}
-	var supervisors []common.Supervisor
+	var supervisors common.Supervisor
 	if json.NewDecoder(request.Body).Decode(&supervisors) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -110,5 +111,28 @@ func AddSupervisor(tokenManager *auth.TokenManager, repository *service.Reposito
 	if repository.AddSupervisor(issuer, supervisors) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
+	}
+}
+
+func ReadSettings(file string) service.ServerSettings {
+	settings, err := ini.Load(file)
+	if err != nil {
+		panic(err)
+	}
+	rs := service.RepositorySettings{
+		Uri: settings.Section("").Key("db_link").String(),
+		UsersPath: service.CollectionPath{
+			Database:   settings.Section("users").Key("db_name").String(),
+			Collection: settings.Section("users").Key("collection_name").String(),
+		},
+		MeasurementsPath: service.CollectionPath{
+			Database:   settings.Section("measurements").Key("db_name").String(),
+			Collection: settings.Section("measurements").Key("collection_name").String(),
+		},
+	}
+	privateKey := settings.Section("").Key("private_key").String()
+	return service.ServerSettings{
+		RS: rs,
+		PrivateKey: privateKey,
 	}
 }

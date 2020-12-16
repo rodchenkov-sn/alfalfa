@@ -50,10 +50,8 @@ func TestRepository(t *testing.T) {
 	repository, _ := service.NewRepository(settings.RS)
 	var user = common.UserInfo{"admin", "admin", nil}
 	repository.AddUser(user)
-	var supervisors []common.Supervisor
 	var supervisor = common.Supervisor{"admin"}
-	_ = append(supervisors, supervisor)
-	var err = repository.AddSupervisor(user.Login,supervisors)
+	var err = repository.AddSupervisor(user.Login,supervisor)
 	if err != nil {
 		t.Errorf("AddSupervisor: Error on supervisor creation: %s", err)
 	}
