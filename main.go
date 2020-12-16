@@ -104,7 +104,7 @@ func addSupervisor(tokenManager *auth.TokenManager, repository *service.Reposito
 		writer.WriteHeader(http.StatusNetworkAuthenticationRequired)
 		return
 	}
-	var supervisors []common.Supervisor
+	var supervisors common.Supervisor
 	if json.NewDecoder(request.Body).Decode(&supervisors) != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return

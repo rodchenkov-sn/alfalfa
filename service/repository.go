@@ -27,22 +27,17 @@ type Repository struct {
 	Measurements  *mongo.Collection
 }
 
-func (r *Repository) AddSupervisor(login string, supervisors []common.Supervisor) error {
+func (r *Repository) AddSupervisor(login string, supervisor common.Supervisor) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	for _, supervisor := range supervisors {
-		_, err := r.Users.UpdateOne(
-			ctx,
-			bson.M{"login": login},
-			bson.M{
-				"$push": bson.M{"supervisors": supervisor.Login},
-			},
-		)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	_, err := r.Users.UpdateOne(
+		ctx,
+		bson.M{"login": login},
+		bson.M{
+			"$push": bson.M{"supervisors": supervisor.Login},
+		},
+	)
+	return err
 }
 
 func (r *Repository) GetRights(issuer string, subject string) Rights {
@@ -101,7 +96,7 @@ func (r *Repository) AddUser(info common.UserInfo) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	var supervisors []string
+	supervisors := []string{} // supervisors array must have address
 	if info.Supervisors != nil {
 		supervisors = info.Supervisors
 	}
@@ -127,7 +122,9 @@ func (r *Repository) AddMeasurement(login string, measurement common.Measurement
 func (r *Repository) GetMeasurements(login string) ([]common.Measurement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	cur, err := r.Measurements.Find(ctx, bson.M{"login": login})
+	cur, err := r.Measurements.Find(ctx, bson.M{"login": login}, options.Find().SetSort(bson.M{
+		"timestamp": -1,
+	}))
 	if err != nil {
 		return nil, err
 	}
