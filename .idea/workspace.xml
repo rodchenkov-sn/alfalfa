@@ -11,7 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d9732ed1-33fc-46e8-80f4-a1b49acd26ec" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/network/endpoints.go" beforeDir="false" afterPath="$PROJECT_DIR$/network/endpoints.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,14 +81,15 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="TestHashing in unit_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestGetMeasurments in github.com/rodchenkov-sn/alfalfa/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="alfalfa" />
       <working_directory value="$PROJECT_DIR$/tests" />
       <framework value="gotest" />
-      <kind value="FILE" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rodchenkov-sn/alfalfa/tests" />
       <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/tests/unit_test.go" />
-      <pattern value="^TestHashing$" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestGetMeasurments$" />
       <method v="2" />
     </configuration>
     <configuration name="TestPostMeasurments in github.com/rodchenkov-sn/alfalfa/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -125,10 +127,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Test.go test github.com/rodchenkov-sn/alfalfa/tests" />
+        <item itemvalue="Go Test.TestPostMeasurments in github.com/rodchenkov-sn/alfalfa/tests" />
+        <item itemvalue="Go Test.TestGetMeasurments in github.com/rodchenkov-sn/alfalfa/tests" />
         <item itemvalue="Go Test.TestRepository in github.com/rodchenkov-sn/alfalfa/tests" />
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Test.TestPostMeasurments in github.com/rodchenkov-sn/alfalfa/tests" />
-        <item itemvalue="Go Test.TestHashing in unit_test.go" />
       </list>
     </recent_temporary>
   </component>
@@ -148,6 +150,7 @@
       <workItem from="1608117839940" duration="9195000" />
       <workItem from="1608146070526" duration="4958000" />
       <workItem from="1608151679952" duration="601000" />
+      <workItem from="1608200624731" duration="292000" />
     </task>
     <servers />
   </component>
@@ -186,26 +189,26 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1604342252720" />
-    <state width="1358" height="221" key="GridCell.Tab.0.bottom" timestamp="1608152046626">
+    <state width="1358" height="221" key="GridCell.Tab.0.bottom" timestamp="1608201118859">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1608152046626" />
-    <state width="1358" height="221" key="GridCell.Tab.0.center" timestamp="1608152046624">
+    <state width="1358" height="221" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1608201118859" />
+    <state width="1358" height="221" key="GridCell.Tab.0.center" timestamp="1608201118858">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1608152046624" />
-    <state width="1358" height="221" key="GridCell.Tab.0.left" timestamp="1608152046624">
+    <state width="1358" height="221" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1608201118858" />
+    <state width="1358" height="221" key="GridCell.Tab.0.left" timestamp="1608201118858">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1608152046624" />
-    <state width="1358" height="221" key="GridCell.Tab.0.right" timestamp="1608152046625">
+    <state width="1358" height="221" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1608201118858" />
+    <state width="1358" height="221" key="GridCell.Tab.0.right" timestamp="1608201118859">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state width="1493" height="313" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605093895038" />
-    <state width="1358" height="221" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1608152046625" />
+    <state width="1358" height="221" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1608201118859" />
     <state width="1358" height="275" key="GridCell.Tab.1.bottom" timestamp="1608151645168">
       <screen x="0" y="25" width="1440" height="875" />
     </state>
